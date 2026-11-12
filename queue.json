@@ -1,5 +1,18 @@
 [
   {
+    "id": "2026-11-12-carousel-template-test",
+    "at": "2026-11-12T15:15:00-06:00",
+    "type": "carousel",
+    "media": [
+      "carousel-template-1.jpg",
+      "carousel-template-2.jpg",
+      "carousel-template-3.jpg",
+      "carousel-template-4.jpg",
+      "carousel-template-5.jpg"
+    ],
+    "caption": "A professional presentation isn't recognized by its template. It's recognized because it was designed for its topic.\n\nYour client has already seen those templates in plenty of other meetings. Deckly designs each presentation for what you're going to say: structure, charts and a design of its own.\n\nSwipe: four topics, four different designs.\n\nTry it with your next topic. Link in bio.\n\n#professionalpresentations #presentationdesign #b2bmarketing #deckly"
+  },
+  {
     "id": "2026-11-13-reel-presentations",
     "at": "2026-11-13T09:00:00-06:00",
     "type": "reel",
