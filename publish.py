@@ -22,7 +22,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 GRAPH = "https://graph.facebook.com/v23.0"
-MAX_LATE = timedelta(hours=6)
+MAX_LATE = timedelta(hours=18)
 
 TOKEN = os.environ["IG_TOKEN"]
 USER = os.environ["IG_USER_ID"]
