@@ -97,6 +97,9 @@ def main() -> int:
         if now - at > MAX_LATE:
             print(f"SKIPPED  {post['id']}: more than {MAX_LATE} late, not publishing old posts")
             failed = True
+            if not dry:  # record it once so the alert fires once, not on every run
+                done[post["id"]] = {"skipped_at": now.isoformat()}
+                done_path.write_text(json.dumps(done, indent=2) + "\n", encoding="utf-8")
             continue
         if dry:
             print(f"would publish {post['id']} ({post['type']}, {len(post['media'])} file(s))")
