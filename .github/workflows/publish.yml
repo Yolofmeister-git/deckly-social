@@ -10,6 +10,7 @@ on:
         default: true
 permissions:
   contents: write
+  issues: write
 concurrency:
   group: publish
   cancel-in-progress: false
@@ -22,11 +23,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Publish due posts
+        id: publish
         env:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           MEDIA_BASE: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
-        run: python publish.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+        run: python publish.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }} 2>&1 | tee run.log; exit ${PIPESTATUS[0]}
+        shell: bash
       - name: Record what was published
         if: always()
         run: |
@@ -34,3 +37,15 @@ jobs:
           git config user.email "hola@decklyai.com"
           git add published.json
           git diff --cached --quiet || (git commit -m "published: $(date -u +%FT%RZ)" && git push)
+      - name: Open an issue when a post fails
+        if: failure() && steps.publish.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          open=$(gh issue list --state open --search "Publishing failed in:title" --json number -q '.[0].number')
+          body=$(printf 'Run: %s/%s/actions/runs/%s
+
+```
+%s
+```' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(grep -E 'FAILED|SKIPPED' run.log)")
+          if [ -n "$open" ]; then gh issue comment "$open" --body "$body"; else gh issue create --title "Publishing failed" --body "$body"; fi
