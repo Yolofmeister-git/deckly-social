@@ -42,10 +42,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          {
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            grep -E 'FAILED|SKIPPED' run.log | sed 's/^/    /'
+          } > body.md
           open=$(gh issue list --state open --search "Publishing failed in:title" --json number -q '.[0].number')
-          body=$(printf 'Run: %s/%s/actions/runs/%s
-
-```
-%s
-```' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" "$(grep -E 'FAILED|SKIPPED' run.log)")
-          if [ -n "$open" ]; then gh issue comment "$open" --body "$body"; else gh issue create --title "Publishing failed" --body "$body"; fi
+          if [ -n "$open" ]; then gh issue comment "$open" --body-file body.md; else gh issue create --title "Publishing failed" --body-file body.md; fi

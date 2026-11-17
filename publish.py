@@ -96,6 +96,7 @@ def main() -> int:
             continue
         if now - at > MAX_LATE:
             print(f"SKIPPED  {post['id']}: more than {MAX_LATE} late, not publishing old posts")
+            failed = True
             continue
         if dry:
             print(f"would publish {post['id']} ({post['type']}, {len(post['media'])} file(s))")
